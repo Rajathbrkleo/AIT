@@ -1,8 +1,202 @@
 
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>Hello, World!</h1>
-    <p>My GitHub Pages site is live.</p>
-  </body>
+<head>
+    <title>Education Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header a { color: white; text-decoration: none; margin-left: 20px; }
+        .container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .btn.secondary { background: #28a745; }
+        .btn.danger { background: #dc3545; }
+    </style>
+</head>
+<body>
+
+{% if page != 'login' %}
+<header>
+    <div>
+        <strong>🎓 Education Portal</strong>
+        {% if role %} — {{ role|capitalize }}{% endif %}
+    </div>
+    <div>
+        <span>{{ name }}</span>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </div>
+</header>
+{% endif %}
+
+<div class="container">
+
+<!-- ================= LOGIN ================= -->
+{% if page == 'login' %}
+<div class="card">
+    <h2>Login</h2>
+
+    {% if error %}
+        <p style="color:red">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <input name="username" placeholder="Username" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <button class="btn">Login</button>
+    </form>
+
+    <p>
+        <strong>Demo Users</strong><br>
+        Admin: admin / admin123<br>
+        Teacher: teacher / teacher123<br>
+        Student: student / student123
+    </p>
+</div>
+{% endif %}
+
+<!-- ================= DASHBOARD ================= -->
+{% if page == 'dashboard' %}
+<div class="card">
+    <h2>Welcome, {{ name }} 👋</h2>
+    <p>You are logged in as <strong>{{ role }}</strong></p>
+</div>
+
+<div class="grid">
+    {% if role == 'admin' %}
+    <div class="card">
+        <h3>🛠 Admin Panel</h3>
+        <p>System management and controls</p>
+        <a class="btn" href="/materials">Course Materials</a>
+    </div>
+    {% endif %}
+
+    {% if role in ['teacher', 'admin'] %}
+    <div class="card">
+        <h3>📚 Teacher Dashboard</h3>
+        <p>Manage courses and materials</p>
+        <a class="btn secondary" href="/materials">Go to Materials</a>
+    </div>
+    {% endif %}
+
+    {% if role in ['student', 'teacher', 'admin'] %}
+    <div class="card">
+        <h3>📖 Student Dashboard</h3>
+        <p>Access enrolled courses</p>
+        <a class="btn" href="/state">My Courses</a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- ================= STATE / COURSES ================= -->
+{% if page == 'state' %}
+<div class="card">
+    <h2>📚 My Courses</h2>
+    <p>List of enrolled courses (State Board example)</p>
+
+    <ul>
+        <li>Python Programming</li>
+        <li>Data Structures</li>
+        <li>English Language</li>
+        <li>Kannada</li>
+    </ul>
+
+    <a class="btn" href="/dashboard">Back</a>
+</div>
+{% endif %}
+
+<!-- ================= MATERIALS ================= -->
+{% if page == 'materials' %}
+<div class="card">
+    <h2>📖 Course Materials</h2>
+    <p>Select Board</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>CBSE</h3>
+        <a class="btn" href="/standards/cbse">View Standards</a>
+    </div>
+    <div class="card">
+        <h3>State Board</h3>
+        <a class="btn" href="/standards/state">View Standards</a>
+    </div>
+    <div class="card">
+        <h3>ICSE</h3>
+        <a class="btn" href="/standards/icse">View Standards</a>
+    </div>
+</div>
+{% endif %}
+
+<!-- ================= STANDARDS ================= -->
+{% if page == 'standards' %}
+<div class="card">
+    <h2>📘 Standards — {{ board|upper }}</h2>
+</div>
+
+<div class="grid">
+    {% for std in range(1,11) %}
+    <div class="card">
+        <h3>{{ std }} Standard</h3>
+        <a class="btn" href="/subjects/{{ board }}/{{ std }}">View Subjects</a>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ================= SUBJECTS ================= -->
+{% if page == 'subjects' %}
+<div class="card">
+    <h2>📗 Subjects — {{ standard }} Standard</h2>
+</div>
+
+<div class="grid">
+    {% for subject in ['English','Kannada','Hindi','Maths','Science','Social'] %}
+    <div class="card">
+        <h3>{{ subject }}</h3>
+        <p>Materials & Lessons</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+</div>
+</body>
 </html>
